@@ -3,7 +3,7 @@
         <q-card class="no-shadow" >
             <q-card-section class="row q-pa-lg">
         <span class="text-body1 text-grey-8 text-weight-bold">
-          © 2025 RAUNAK, Inc. All rights reserved.
+          © 2025 WeBet, Inc. All rights reserved.
         </span>
                 <q-space></q-space>
                 <q-btn flat dense color="grey-8">

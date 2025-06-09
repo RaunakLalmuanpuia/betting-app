@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 
+use App\Http\Controllers\Player\EventController as PlayerEventController;
+
 Route::get('/', function () {
     return Inertia::render('Home');
 });
@@ -44,3 +46,14 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 });
+
+Route::group([
+    'middleware' => 'auth',
+    'prefix' => 'player',
+    'as' => 'player.'
+], function () {
+    Route::get('events', [PlayerEventController::class, 'index'])->name('events.index');
+});
+
+
+

@@ -8,13 +8,13 @@
                 <div class="flex items-center gap-x-3 cursor-pointer" @click="$inertia.get('/')">
                     <q-img width="40px" height="40px" alt="logo" src="/images/logo.svg" />
                     <div style="line-height: 1" class="text-lg text-grey-10 text-weight-medium">
-                        We Bet<br>
+                        WeBet<br>
                         <span class="text-sm text-grey-5">(Bet On Any Events)</span>
                     </div>
                 </div>
             </q-toolbar-title>
 
-            <q-item flat v-if="!!$page.props.auth?.user">
+            <q-item flat v-if="!!$page.props.auth?.user" class="q-pa-none q-ma-none no-wrap" style="max-width: max-content;">
                 <q-item-section>
                     <div class="column">
                         <div class="text-dark q-pa-none">{{$page.props.auth?.user?.name}}</div>

@@ -34,7 +34,7 @@
 
                     <q-img src="/images/logo.svg" width="46px"/>
                     <div style="line-height: 1" class="text-lg text-grey-3 text-weight-medium text-center">
-                        We Bet<br>
+                        WeBet<br>
                         <span class="text-sm text-grey-10">(Bet On Any Events)</span>
                     </div>
                 </div>
@@ -61,29 +61,22 @@
 
                 <q-separator class="q-my-sm"/>
 
-                <q-item :active="route().current()==='events.index'" active
+                <q-item :active="route().current()==='player.events.index'" active
                         active-class="active-menu text-accent"
                         clickable
-                        @click="$inertia.get(route('events.index'))">
+                        @click="$inertia.get(route('player.events.index'))">
                     <q-item-section avatar>
                         <q-icon>
 
-                            <svg v-if="route().current()==='events.index'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 13.6429V24C17.5 24.2761 17.2761 24.5 17 24.5H6C5.72386 24.5 5.5 24.2761 5.5 24V9C5.5 8.72386 5.72386 8.5 6 8.5H13.5L15 7H6C4.89543 7 4 7.89543 4 9V24C4 25.1046 4.89543 26 6 26H17C18.1046 26 19 25.1046 19 24V12.3571L17.5 13.6429Z" fill="#306ADB"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 10H12C10.8954 10 10 10.8954 10 12V14C10 15.1046 10.8954 16 12 16H14C14.9319 16 15.715 15.3626 15.937 14.5H14H12.5H12C11.7239 14.5 11.5 14.2761 11.5 14V12C11.5 11.7239 11.7239 11.5 12 11.5H12.5V10Z" fill="#306ADB"/>
-                                <rect x="8" y="19.5" width="1.5" height="8" transform="rotate(-90 8 19.5)" fill="#306ADB"/>
-                                <rect x="11" y="22.5" width="1.5" height="5" transform="rotate(-90 11 22.5)" fill="#306ADB"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14.9143 11.1281L14.9143 11.8261L15.6305 11.826L22.696 4.90519L21.989 4.19823L14.9143 11.1281ZM22 2.08789L13.4144 10.4977L13.4141 13.3262L16.2427 13.3259L24.8283 4.91616L22 2.08789Z" fill="#306ADB"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.5 10.6429V21C20.5 21.2761 20.2761 21.5 20 21.5V22V23C21.1046 23 22 22.1046 22 21V9.35714L20.5 10.6429ZM7 8H8.5V6C8.5 5.72386 8.72386 5.5 9 5.5H16.5L18 4H9C7.89543 4 7 4.89543 7 6V8Z" fill="#306ADB"/>
+                            <svg v-if="route().current()==='player.events.index'" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 13.9999L5.57465 20.2985C5.61893 20.4756 5.64107 20.5642 5.66727 20.6415C5.92317 21.397 6.60352 21.9282 7.39852 21.9933C7.4799 21.9999 7.5712 21.9999 7.75379 21.9999C7.98244 21.9999 8.09677 21.9999 8.19308 21.9906C9.145 21.8982 9.89834 21.1449 9.99066 20.193C10 20.0967 10 19.9823 10 19.7537V5.49991M18.5 13.4999C20.433 13.4999 22 11.9329 22 9.99991C22 8.06691 20.433 6.49991 18.5 6.49991M10.25 5.49991H6.5C4.01472 5.49991 2 7.51463 2 9.99991C2 12.4852 4.01472 14.4999 6.5 14.4999H10.25C12.0164 14.4999 14.1772 15.4468 15.8443 16.3556C16.8168 16.8857 17.3031 17.1508 17.6216 17.1118C17.9169 17.0756 18.1402 16.943 18.3133 16.701C18.5 16.4401 18.5 15.9179 18.5 14.8736V5.1262C18.5 4.08191 18.5 3.55976 18.3133 3.2988C18.1402 3.05681 17.9169 2.92421 17.6216 2.88804C17.3031 2.84903 16.8168 3.11411 15.8443 3.64427C14.1772 4.55302 12.0164 5.49991 10.25 5.49991Z" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            <svg v-else width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 13.6429V24C17.5 24.2761 17.2761 24.5 17 24.5H6C5.72386 24.5 5.5 24.2761 5.5 24V9C5.5 8.72386 5.72386 8.5 6 8.5H13.5L15 7H6C4.89543 7 4 7.89543 4 9V24C4 25.1046 4.89543 26 6 26H17C18.1046 26 19 25.1046 19 24V12.3571L17.5 13.6429Z" fill="#191C51"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 10H12C10.8954 10 10 10.8954 10 12V14C10 15.1046 10.8954 16 12 16H14C14.9319 16 15.715 15.3626 15.937 14.5H14H12.5H12C11.7239 14.5 11.5 14.2761 11.5 14V12C11.5 11.7239 11.7239 11.5 12 11.5H12.5V10Z" fill="#D81D1D"/>
-                                <rect x="8" y="19.5" width="1.5" height="8" transform="rotate(-90 8 19.5)" fill="#191C51"/>
-                                <rect x="11" y="22.5" width="1.5" height="5" transform="rotate(-90 11 22.5)" fill="#191C51"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14.9143 11.1281L14.9143 11.8261L15.6305 11.826L22.696 4.90519L21.989 4.19823L14.9143 11.1281ZM22 2.08789L13.4144 10.4977L13.4141 13.3262L16.2427 13.3259L24.8283 4.91616L22 2.08789Z" fill="#D81D1D"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.5 10.6429V21C20.5 21.2761 20.2761 21.5 20 21.5V22V23C21.1046 23 22 22.1046 22 21V9.35714L20.5 10.6429ZM7 8H8.5V6C8.5 5.72386 8.72386 5.5 9 5.5H16.5L18 4H9C7.89543 4 7 4.89543 7 6V8Z" fill="#191C51"/>
+
+
+                            <svg v-else width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 13.9999L5.57465 20.2985C5.61893 20.4756 5.64107 20.5642 5.66727 20.6415C5.92317 21.397 6.60352 21.9282 7.39852 21.9933C7.4799 21.9999 7.5712 21.9999 7.75379 21.9999C7.98244 21.9999 8.09677 21.9999 8.19308 21.9906C9.145 21.8982 9.89834 21.1449 9.99066 20.193C10 20.0967 10 19.9823 10 19.7537V5.49991M18.5 13.4999C20.433 13.4999 22 11.9329 22 9.99991C22 8.06691 20.433 6.49991 18.5 6.49991M10.25 5.49991H6.5C4.01472 5.49991 2 7.51463 2 9.99991C2 12.4852 4.01472 14.4999 6.5 14.4999H10.25C12.0164 14.4999 14.1772 15.4468 15.8443 16.3556C16.8168 16.8857 17.3031 17.1508 17.6216 17.1118C17.9169 17.0756 18.1402 16.943 18.3133 16.701C18.5 16.4401 18.5 15.9179 18.5 14.8736V5.1262C18.5 4.08191 18.5 3.55976 18.3133 3.2988C18.1402 3.05681 17.9169 2.92421 17.6216 2.88804C17.3031 2.84903 16.8168 3.11411 15.8443 3.64427C14.1772 4.55302 12.0164 5.49991 10.25 5.49991Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
+
 
                         </q-icon>
 
@@ -133,6 +126,7 @@
                         clickable
                         @click="$inertia.get(route('payout.index'))">
                     <q-item-section avatar>
+
                         <svg v-if="route().current()==='payout.index'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.5h13.5a.5.5 0 0 1 .5.5v6.938l1.5-1.52V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a8 8 0 0 0 8 8h7.5a2 2 0 0 0 2-2v-3.038l-1.5 1.52V23a.5.5 0 0 1-.5.5H12A6.5 6.5 0 0 1 5.5 17V5a.5.5 0 0 1 .5-.5z" fill="#306ADB"/>
                             <path fill="#306ADB" d="M5 18h7v1.5H5z"/>
