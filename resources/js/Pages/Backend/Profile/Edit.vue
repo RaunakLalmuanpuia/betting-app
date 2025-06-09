@@ -4,7 +4,7 @@
     <q-page class="flex flex-center q-pa-md">
         <q-card class="q-pa-md q-ma-md" style="width: 100%; max-width: 600px">
             <q-card-section>
-                <div class="text-h5">Edit Profile</div>
+                <div class="text-h6">Edit Profile</div>
                 <q-breadcrumbs class="text-caption q-mt-sm text-grey-7">
                     <q-breadcrumbs-el label="Dashboard" @click="$inertia.get(route('dashboard'))" class="cursor-pointer" />
                     <q-breadcrumbs-el label="Profile" @click="$inertia.get(route('profile.edit'))" class="cursor-pointer" />

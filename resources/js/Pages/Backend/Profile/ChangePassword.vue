@@ -1,6 +1,6 @@
 <template>
-    <q-page class="flex flex-center bg-grey-2">
-        <q-card class="q-pa-md shadow-2" style="width: 100%; max-width: 500px">
+    <q-page class="flex flex-center q-pa-md">
+        <q-card class="q-pa-md q-ma-md" style="width: 100%; max-width: 600px">
             <q-card-section>
                 <div class="text-h6">Change Password</div>
                 <q-breadcrumbs class="text-grey-7 text-caption q-mt-sm">
