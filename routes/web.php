@@ -5,6 +5,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+
 Route::get('/', function () {
     return Inertia::render('Home');
 });
@@ -34,4 +36,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::put('update', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('edit-password', [ProfileController::class, 'editPassword'])->name('profile.edit-password');
     Route::put('update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+});
+
+
+//Dashboard
+Route::group(['middleware'=>'auth'], function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 });

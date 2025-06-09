@@ -1,89 +1,63 @@
 <template>
-    <div class="max-w-4xl mx-auto px-4 py-6">
-        <div class="flex items-center justify-between bg-white p-4  rounded">
-            <div>
-                <h2 class="text-2xl font-semibold">Change Password</h2>
-                <nav class="text-sm text-gray-600 mt-2 space-x-2">
-                  <span @click="$inertia.get(route('dashboard'))" class="cursor-pointer  hover:underline">
-                    Dashboard
-                  </span>
-                    <span>/</span>
-                    <span @click="$inertia.get(route('profile.edit'))" class="cursor-pointer  hover:underline">
-                        Profile
-                    </span>
-                </nav>
-            </div>
-        </div>
+    <q-page class="flex flex-center bg-grey-2">
+        <q-card class="q-pa-md shadow-2" style="width: 100%; max-width: 500px">
+            <q-card-section>
+                <div class="text-h6">Change Password</div>
+                <q-breadcrumbs class="text-grey-7 text-caption q-mt-sm">
+                    <q-breadcrumbs-el label="Dashboard" @click="$inertia.get(route('dashboard'))" class="cursor-pointer" />
+                    <q-breadcrumbs-el label="Profile" @click="$inertia.get(route('profile.edit'))" class="cursor-pointer" />
+                </q-breadcrumbs>
+            </q-card-section>
 
-        <div class="mt-6 flex justify-center">
-            <form @submit.prevent="handleSubmit" class="w-full max-w-xl bg-white p-6 rounded shadow space-y-4">
-                <!-- Old Password -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">Old Password</label>
-                    <input
-                        v-model="form.old_password"
-                        type="password"
-                        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        :class="{ 'border-red-500': form.errors.old_password }"
-                        placeholder="Enter your old password"
-                    />
-                    <p v-if="form.errors.old_password" class="text-red-500 text-sm mt-1">{{ form.errors.old_password }}</p>
-                </div>
+            <q-form @submit.prevent="handleSubmit" class="q-gutter-md q-pa-sm">
+                <q-input
+                    v-model="form.old_password"
+                    type="password"
+                    label="Old Password"
+                    outlined
+                    :error="!!form.errors.old_password"
+                    :error-message="form.errors.old_password"
+                />
 
-                <!-- New Password -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">New Password</label>
-                    <input
-                        v-model="form.password"
-                        type="password"
-                        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        :class="{ 'border-red-500': form.errors.password }"
-                        placeholder="Enter new password"
-                    />
-                    <p v-if="form.errors.password" class="text-red-500 text-sm mt-1">{{ form.errors.password }}</p>
-                </div>
+                <q-input
+                    v-model="form.password"
+                    type="password"
+                    label="New Password"
+                    outlined
+                    :error="!!form.errors.password"
+                    :error-message="form.errors.password"
+                />
 
-                <!-- Confirm New Password -->
-                <div>
-                    <label class="block font-medium text-gray-700 mb-1">Confirm New Password</label>
-                    <input
-                        v-model="form.password_confirmation"
-                        type="password"
-                        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        :class="{ 'border-red-500': form.errors.password_confirmation }"
-                        placeholder="Re-enter new password"
-                    />
-                    <p v-if="form.errors.password_confirmation" class="text-red-500 text-sm mt-1">
-                        {{ form.errors.password_confirmation }}
-                    </p>
-                </div>
+                <q-input
+                    v-model="form.password_confirmation"
+                    type="password"
+                    label="Confirm New Password"
+                    outlined
+                    :error="!!form.errors.password_confirmation"
+                    :error-message="form.errors.password_confirmation"
+                />
 
-                <!-- Buttons -->
-                <div class="flex space-x-3 pt-4">
-                    <button
-                        type="submit"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                    >
-                        Update
-                    </button>
-                    <button
-                        type="button"
-                        @click="handleBack"
-                        class="border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-100 transition"
-                    >
-                        Cancel
-                    </button>
+                <div class="row q-col-gutter-sm q-pt-md">
+                    <div class="col">
+                        <q-btn label="Update" type="submit" color="primary" class="full-width" />
+                    </div>
+                    <div class="col">
+                        <q-btn label="Cancel" color="red" outline class="full-width" @click="handleBack" />
+                    </div>
                 </div>
-            </form>
-        </div>
-    </div>
+            </q-form>
+        </q-card>
+    </q-page>
 </template>
 <script setup>
-import AuthLayout from "@/Layouts/AuthLayout.vue";
+import BackendLayout from "../../../Layouts/BackendLayout.vue";
 import { useForm } from "@inertiajs/vue3";
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
 
 defineOptions({
-    layout: AuthLayout,
+    layout: BackendLayout,
 });
 
 const form = useForm({
@@ -94,8 +68,24 @@ const form = useForm({
 
 const handleSubmit = () => {
     form.put(route('profile.update-password'), {
-        onStart: () => console.log('Submitting...'),
-        onFinish: () => console.log('Finished'),
+        onSuccess: () => {
+            $q.dialog({
+                title: 'Success',
+                message: 'Password updated successfully!',
+                ok: true,
+                color: 'green-6',
+                icon: 'check_circle',
+            });
+        },
+        onError: () => {
+            $q.dialog({
+                title: 'Error',
+                message: 'Please correct the form errors.',
+                ok: true,
+                color: 'red-6',
+                icon: 'error',
+            });
+        },
     });
 };
 
