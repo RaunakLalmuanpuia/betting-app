@@ -5,8 +5,15 @@
 
             </slot>
             <q-toolbar-title>
-                <q-img class="cursor-pointer" @click="$inertia.get('/')" width="240px" height="43px" alt="logo" src="/images/logo.png"/>
+                <div class="flex items-center gap-x-3 cursor-pointer" @click="$inertia.get('/')">
+                    <q-img width="40px" height="40px" alt="logo" src="/images/logo.svg" />
+                    <div style="line-height: 1" class="text-lg text-grey-10 text-weight-medium">
+                        We Bet<br>
+                        <span class="text-sm text-grey-5">(Bet On Any Events)</span>
+                    </div>
+                </div>
             </q-toolbar-title>
+
             <q-item flat v-if="!!$page.props.auth?.user">
                 <q-item-section>
                     <div class="column">
@@ -28,7 +35,7 @@
                 <q-btn v-if="$q.screen.gt.sm" @click="$inertia.get(route('register.create'))" color="btn-primary sized-btn"  label="Register" no-caps/>
             </div>
 
-            <!--            <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />-->
+
         </q-toolbar>
     </q-header>
 </template>

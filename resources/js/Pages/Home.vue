@@ -16,7 +16,7 @@ const menuVisible = ref(false)
                     width="240px"
                     height="43px"
                     alt="logo"
-                    src="/images/logo.png"
+                    src="/images/logo.svg"
                 />
             </q-toolbar-title>
 

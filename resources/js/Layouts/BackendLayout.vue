@@ -30,12 +30,12 @@
         <q-drawer width="250"  class="print-hide bg-transparent"  v-model="state.leftDrawerOpen" side="left">
             <q-list class="bg-transparent full-height">
                 <!--        <q-img class="q-ma-md" width="250px" height="43px" src="/images/logo.png"/>-->
-                <div class="column items-center q-gutter-md q-pa-lg bg-primary text-white">
+                <div class="column items-center q-gutter-md q-pa-lg bg-gray-600 text-white">
 
-                    <q-img src="/images/tax-logo.png" width="46px"/>
+                    <q-img src="/images/logo.svg" width="46px"/>
                     <div style="line-height: 1" class="text-lg text-grey-3 text-weight-medium text-center">
-                        Taxation Department
-                        <span class="text-sm text-grey-7">(Government of Mizoram)</span>
+                        We Bet<br>
+                        <span class="text-sm text-grey-10">(Bet On Any Events)</span>
                     </div>
                 </div>
                 <q-item :active="route().current()==='dashboard'" active
@@ -162,7 +162,7 @@
         </q-page-container>
 
         <q-footer  class="bg-white  q-pa-md">
-<!--            <Footer/>-->
+            <Footer/>
         </q-footer>
 
     </q-layout>
