@@ -11,7 +11,7 @@ class Event extends Model
     //
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'bet_closes_at', 'status', 'winning_option_id'];
+    protected $fillable = ['title', 'description', 'image', 'bet_closes_at', 'status', 'winning_option_id'];
 
     public function options()
     {

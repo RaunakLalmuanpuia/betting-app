@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->string('label'); // e.g. Yes, No or Team A / Team B
+            $table->text('description')->nullable();
+            $table->string('image')->nullable(); // stores image filename or path
             $table->timestamps();
             $table->unique(['event_id', 'label']);
         });

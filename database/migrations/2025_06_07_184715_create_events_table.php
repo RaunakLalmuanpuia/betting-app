@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('image')->nullable(); // stores image filename or path
             $table->timestamp('bet_closes_at');
             $table->enum('status', ['open', 'closed', 'settled', 'cancelled'])->default('open');
             $table->foreignId('winning_option_id')->nullable();

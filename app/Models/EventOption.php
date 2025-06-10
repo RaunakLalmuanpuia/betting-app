@@ -10,7 +10,7 @@ class EventOption extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['event_id', 'label'];
+    protected $fillable = ['event_id', 'label','description','image'];
 
     public function event()
     {
