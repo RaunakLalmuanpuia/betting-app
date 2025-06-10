@@ -4,11 +4,22 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Repositories\BetRepository;
+use App\Traits\CanPay;
+use App\Util\SequenceGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
+     use CanPay;
+
+    private BetRepository $repository;
+    public function __construct(BetRepository $betRepository)
+    {
+        $this->repository = $betRepository;
+    }
     public function index(Request $request)
     {
         $perPage = 3;
@@ -66,6 +77,84 @@ class EventController extends Controller
             'filters' => [
                 'type' => $type,
             ]
+        ]);
+    }
+
+
+    public function show(Event $event)
+    {
+        $event->load(['options.bets']);
+
+        $options = $event->options->map(function ($option) {
+            $totalAmount = $option->bets->sum('amount');
+            $totalBets = $option->bets->count();
+
+            return [
+                'id' => $option->id,
+                'label' => $option->label,
+                'description' => $option->description,
+                'image' => $option->image,
+                'total_amount' => $totalAmount,
+                'total_bets' => $totalBets,
+            ];
+        });
+
+        $totalEventAmount = $options->sum('total_amount');
+
+        $options = $options->map(function ($option) use ($totalEventAmount) {
+            $odds = $option['total_amount'] > 0
+                ? round($totalEventAmount / $option['total_amount'], 2)
+                : 0;
+            return [...$option, 'odds' => $odds];
+        });
+
+        return Inertia::render('Backend/Player/Event/Show', [
+            'event' => [
+                'id' => $event->id,
+                'title' => $event->title,
+                'description' => $event->description,
+                'image' => $event->image,
+                'bet_closes_at' => $event->bet_closes_at,
+                'status' => $event->status,
+                'options' => $options,
+            ]
+        ]);
+    }
+
+    public function placeBet(Event $event, Request $request){
+
+//        dd($request->all());
+        $validatedData=$this->validate($request, [
+            'agree'=>'bool:true',
+            'event_option_id'=>'required',
+            'amount'=>'required|numeric|min:10',
+
+        ]);
+
+
+        $user = $request->user();
+
+        $orderId=  SequenceGenerator::generateOrderId();
+
+        $amount=$request->amount;
+
+        $token=$this->initiatePayment(
+            $request->user(),
+            $orderId,
+            $amount,
+            route('callback.place-bet')
+        );
+
+        $option=$request->event_option_id;
+
+        $bet=$this->repository->makeBet($user,$event,$option,$orderId,$amount);
+
+        abort_if(blank($bet),500,'Something went wrong');
+
+        return response()->json([
+            'order_id'=>$orderId,
+            'token'=>$token,
+            'amount' => $amount,
         ]);
     }
 }

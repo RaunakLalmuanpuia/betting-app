@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('bets', function (Blueprint $table) {
             $table->id();
+            $table->uuid('bet_uuid')->unique(); // Unique bet identifier
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->foreignId('event_option_id')->constrained()->cascadeOnDelete();
+
+            $table->string('transaction_id')->nullable();
+            $table->string('transaction_status')->nullable();
+
+
             $table->decimal('amount', 12, 2);
             $table->boolean('is_winner')->nullable(); // null = undecided
             $table->decimal('payout_amount', 12, 2)->nullable(); // payout to user

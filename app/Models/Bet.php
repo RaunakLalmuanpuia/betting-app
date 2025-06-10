@@ -12,10 +12,13 @@ class Bet extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'bet_uuid',
         'user_id',
         'event_id',
         'event_option_id',
         'amount',
+        'transaction_id',
+        'transaction_status',
         'is_winner',
         'payout_amount',
         'is_paid',
@@ -27,6 +30,14 @@ class Bet extends Model
         'amount' => 'decimal:2',
         'payout_amount' => 'decimal:2',
     ];
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->bet_uuid = $model->bet_uuid ?? (string) \Illuminate\Support\Str::uuid();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -77,7 +77,7 @@
                                 <q-separator color="grey-5" />
 
                                 <q-card-actions v-if="event.type === 'Open'">
-                                    <q-btn icon="remove_red_eye" flat label="Place Bet" />
+                                    <q-btn  @click="$inertia.get(route('player.events.show',event))" icon="remove_red_eye" flat label="Place Bet" />
                                 </q-card-actions>
                             </q-card>
                         </div>

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Constants\PaymentStatus;
 use App\Models\Bet;
 use App\Models\Event;
 use App\Models\EventOption;
 use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -18,12 +18,10 @@ class DetailedEventSeeder extends Seeder
      */
     public function run(): void
     {
-        //
         $users = User::all();
-
-        // 1. Create 10 events with varying statuses
         $statuses = ['open', 'closed', 'settled'];
 
+        // Step 1: Create events
         foreach (range(1, 10) as $i) {
             $status = $statuses[array_rand($statuses)];
 
@@ -46,50 +44,59 @@ class DetailedEventSeeder extends Seeder
 
         $events = Event::with('options')->get();
 
-        // 2. Create bets for every user on every event
+        // Step 2: Create bets and transactions for each user
         foreach ($events as $event) {
             $options = $event->options;
 
             foreach ($users as $user) {
                 $chosenOption = $options->random();
                 $amount = rand(50, 500);
+                $transactionId = 'TXN_' . Str::upper(Str::random(10));
+                $orderId = 'ORD_' . Str::upper(Str::random(12));
 
+                // Create Bet
                 $bet = Bet::create([
                     'user_id' => $user->id,
                     'event_id' => $event->id,
                     'event_option_id' => $chosenOption->id,
                     'amount' => $amount,
+                    'transaction_id' => $transactionId,
+                    'transaction_status' => 'success',
                 ]);
 
-
+                // Payment received transaction
                 Transaction::create([
                     'user_id' => $user->id,
                     'bet_id' => $bet->id,
+                    'order_id' => $orderId,
+                    'transaction_id' => $transactionId,
                     'type' => 'payment_received',
                     'amount' => $amount,
-                    'reference' => 'PG_REF_' . Str::random(12),
-                    'remarks' => 'Payment received',
+                    'reference' => 'PG_REF_' . Str::upper(Str::random(12)),
+                    'status' => PaymentStatus::PAID,
+                    'remark' => 'Payment received',
                 ]);
 
+                // Bet placed transaction
                 Transaction::create([
                     'user_id' => $user->id,
                     'bet_id' => $bet->id,
+                    'order_id' => 'ORD_' . Str::upper(Str::random(12)),
                     'type' => 'bet_placed',
                     'amount' => $amount,
-                    'remarks' => 'Bet placed on ' . $chosenOption->label,
+                    'status' => PaymentStatus::PAID,
+                    'remark' => 'Bet placed on ' . $chosenOption->label,
                 ]);
             }
         }
 
-        // 3. Settle events with status = 'settled'
+        // Step 3: Settle events
         $settledEvents = Event::where('status', 'settled')->with('options')->get();
 
         foreach ($settledEvents as $event) {
             $options = $event->options;
 
-            if ($options->isEmpty()) {
-                continue;
-            }
+            if ($options->isEmpty()) continue;
 
             $winningOption = $options->random();
             $event->update(['winning_option_id' => $winningOption->id]);
@@ -105,8 +112,6 @@ class DetailedEventSeeder extends Seeder
                 foreach ($winningBets as $bet) {
                     $share = $bet->amount / $totalWinningAmount;
                     $payout = round($share * $totalPool, 2);
-
-                    // Randomly decide if the payout is pending
                     $isPaid = rand(0, 1) === 1;
 
                     $bet->update([
@@ -119,9 +124,11 @@ class DetailedEventSeeder extends Seeder
                         Transaction::create([
                             'user_id' => $bet->user_id,
                             'bet_id' => $bet->id,
+                            'order_id' => 'ORD_' . Str::upper(Str::random(12)),
                             'type' => 'payout_sent',
                             'amount' => $payout,
-                            'remarks' => 'Winnings payout for Event #' . $event->id,
+                            'status' => PaymentStatus::PAID,
+                            'remark' => 'Winnings payout for Event #' . $event->id,
                         ]);
                     }
                 }
@@ -137,7 +144,7 @@ class DetailedEventSeeder extends Seeder
                 ]);
         }
 
-        // 4. Handle closed events (no result declared yet)
+        // Step 4: Handle closed events
         $closedEvents = Event::where('status', 'closed')->get();
 
         foreach ($closedEvents as $event) {

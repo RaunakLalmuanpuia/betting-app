@@ -2,6 +2,9 @@
 
 namespace App\Interfaces;
 
+use App\Models\Event;
+use App\Models\User;
+
 interface BetInterface
 {
     //
@@ -13,5 +16,5 @@ interface BetInterface
 
     public function getBetsByUser();
 
-    public function makeBet($userId,$betAmount);
+    public function makeBet(User $user, Event $event,$option,$orderId,float $amount):mixed;
 }

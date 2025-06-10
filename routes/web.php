@@ -6,8 +6,11 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PaymentCallbackController;
+
 
 use App\Http\Controllers\Player\EventController as PlayerEventController;
+use App\Http\Controllers\Player\BetController as PlayerBetController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -47,13 +50,19 @@ Route::group(['middleware'=>'auth'], function () {
 
 });
 
-Route::group([
-    'middleware' => 'auth',
-    'prefix' => 'player',
-    'as' => 'player.'
-], function () {
-    Route::get('events', [PlayerEventController::class, 'index'])->name('events.index');
+Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], function () {
+    Route::get('event', [PlayerEventController::class, 'index'])->name('events.index');
+    Route::get('event/{event}/show', [PlayerEventController::class, 'show'])->name('events.show');
+    Route::post('event/{event}/place-bet', [PlayerEventController::class, 'placeBet'])->name('events.place-bet');
 });
 
+Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], function () {
+    Route::get('bets', [PlayerBetController::class, 'index'])->name('bets.index');
+});
+
+
+Route::group(['prefix'=>'callback'], function () {
+    Route::post('place-bet', [PaymentCallbackController::class, 'callback'])->name('callback.place-bet');
+});
 
 

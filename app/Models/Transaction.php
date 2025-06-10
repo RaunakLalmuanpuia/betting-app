@@ -11,12 +11,17 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'order_id',
+        'transaction_id',
         'user_id',
         'bet_id',
         'type',
         'amount',
         'reference',
+        'status',
         'remarks',
+        'msg',
+        'extra',
         'transaction_date',
     ];
 

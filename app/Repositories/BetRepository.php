@@ -2,8 +2,18 @@
 
 namespace App\Repositories;
 
+
+use App\Constants\PaymentStatus;
+use App\Constants\PaymentType;
 use App\Interfaces\BetInterface;
+
+use App\Models\Bet;
+use App\Models\Event;
+
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BetRepository implements BetInterface
 {
@@ -53,7 +63,32 @@ class BetRepository implements BetInterface
         return $bets;
     }
 
-    public function makeBet($userId, $betAmount){
+    public function makeBet(User $user, Event $event,$option, $orderId,float $amount): mixed
+    {
+        return DB::transaction(function () use ($user, $event, $option, $orderId, $amount) {
 
+            // Create the bet
+            $bet = Bet::create([
+                'user_id' => $user->id,
+                'event_id' => $event->id,
+                'event_option_id' => $option,
+                'amount' => $amount,
+                'transaction_status'=> PaymentStatus::ATTEMPTED,
+                'is_winner' => false,
+                'is_paid' => false,
+            ]);
+
+            Transaction::create([
+                'order_id' => $orderId,
+                'user_id' => $user->id,
+                'bet_id' => $bet->id,
+                'type' => PaymentType::BET_PLACED,
+                'amount' => $amount,
+                'status' => PaymentStatus::ATTEMPTED,
+                'remarks' => 'Bet placed on option ID ' . $option,
+                'transaction_date' => now(),
+            ]);
+            return $bet;
+        });
     }
 }
