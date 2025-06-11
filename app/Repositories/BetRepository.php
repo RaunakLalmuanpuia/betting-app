@@ -85,7 +85,7 @@ class BetRepository implements BetInterface
                 'type' => PaymentType::BET_PLACED,
                 'amount' => $amount,
                 'status' => PaymentStatus::ATTEMPTED,
-                'remarks' => 'Bet placed on option ID ' . $option,
+                'remark' => 'Bet placed on option ID ' . $option,
                 'transaction_date' => now(),
             ]);
             return $bet;

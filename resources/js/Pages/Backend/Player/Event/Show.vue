@@ -228,7 +228,7 @@ const initPaytm = data => {
 
 onMounted(() => {
     let scriptElement = document.createElement('script')
-    scriptElement.setAttribute('src', 'https://securestage.paytmpayments.com/merchantpgpui/checkoutjs/merchants/Resell00448805757124.js')
+    scriptElement.setAttribute('src', 'https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/Resell00448805757124.js')
     document.head.appendChild(scriptElement)
 })
 

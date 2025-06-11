@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use paytm\paytmchecksum\PaytmChecksum;
-
+use Illuminate\Support\Facades\Log;
 trait CanPay{
     public function initiatePayment(User $user,$order_id,$amount,$callbackUrl)
     {
@@ -44,16 +44,13 @@ trait CanPay{
         );
 
         $url = env('APP_DEBUG')
-            ? "https://securestage.paytmpayments.com/theia/api/v1/initiateTransaction?mid=" . env('MID') . "&orderId=" . $order_id
+            ? "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=" . env('MID') . "&orderId=" . $order_id
             : "https://secure.paytmpayments.com/theia/api/v1/initiateTransaction?mid=" . env('MID') . "&orderId=" . $order_id;
 
-//        dd($url);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json'
         ])->post($url, $paytmParams);
 
-
-        $response->throw();
 
         $result = json_decode($response->body(), true);
 
