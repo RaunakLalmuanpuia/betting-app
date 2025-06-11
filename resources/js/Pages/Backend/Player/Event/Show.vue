@@ -1,70 +1,47 @@
 <template>
     <q-page padding>
-        <q-card class="bg-white text-dark shadow-2">
-            <!-- Smaller Event Banner -->
-            <q-img :src="event.image" height="200px" contain />
+        <q-card class="bg-white text-dark shadow-2 rounded-borders q-mx-auto" style="max-width: 1000px;">
+            <!-- Event Banner -->
+            <q-img :src="event.image" height="220px" contain class="rounded-borders-top" />
 
-            <q-card-section class="text-h5 text-center">
-                {{ event.title }}
-            </q-card-section>
-
-            <q-card-section>
-                <p class="text-body1">{{ event.description }}</p>
-                <p class="text-caption text-grey-7">
-                    <strong>Status:</strong> {{ event.status }}<br>
-                    <strong>Betting Closes At:</strong> {{ event.bet_closes_at }}
-                </p>
+            <!-- Event Title & Info -->
+            <q-card-section class="text-center">
+                <div class="text-h5 q-mb-xs">{{ event.title }}</div>
+                <div class="text-body2 text-grey-7">
+                    <q-icon name="info" class="q-mr-xs" /> {{ event.status }} |
+                    <q-icon name="schedule" class="q-ml-sm q-mr-xs" /> {{ event.bet_closes_at }}
+                </div>
             </q-card-section>
 
             <q-separator />
 
+            <!-- Description -->
             <q-card-section>
-                <h6 class="text-subtitle1 q-mb-md">Options</h6>
+                <p class="text-body1 q-mb-md">{{ event.description }}</p>
+            </q-card-section>
 
-                <!-- Horizontally scrollable options -->
-                <div class="scroll-row">
+            <q-separator />
+
+            <!-- Options -->
+            <q-card-section>
+                <div class="text-subtitle1 q-mb-md">Options</div>
+
+                <!-- Responsive and centered options -->
+                <div class="row q-col-gutter-lg justify-center">
                     <div
                         v-for="opt in event.options"
                         :key="opt.id"
-                        class="option-card"
+                        class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
                     >
-                        <q-card flat bordered class="q-ma-sm" style="min-width: 250px;">
-                            <q-img :src="opt.image" height="120px" contain />
-
+                        <q-card bordered class="q-hoverable transition-all">
+                            <q-img :src="opt.image" height="120px" contain class="rounded-borders-top" />
                             <q-card-section>
-                                <div class="text-bold">{{ opt.label }}</div>
-                                <div class="text-caption text-grey">
-                                    {{ opt.description }}
-                                </div>
-
-                                <div class="q-mt-sm text-caption">
-                                    <strong>Total Bets:</strong> {{ opt.total_bets }}<br>
-                                    <strong>Total Amount:</strong> ₹{{ opt.total_amount.toLocaleString() }}<br>
-                                    <strong>Odds:</strong> {{ opt.odds }}x
-                                </div>
-                            </q-card-section>
-                        </q-card>
-                    </div>
-                    <div
-                        class="option-card"
-                    >
-                        <q-card flat bordered class="q-ma-sm" style="min-width: 250px;">
-                            <q-card-section>
-                                <div class="col-12 column">
-                                    <p>1) You must be at least 18 years of age or the legal gambling age in your jurisdiction to participate.</p>
-                                    <p>2) By using this platform, you agree to abide by all applicable laws and regulations.</p>
-                                    <p>3) All bets placed are final and cannot be canceled or changed once confirmed.</p>
-                                    <p>4) The platform reserves the right to suspend or terminate accounts for suspicious activity.</p>
-                                    <p>5) Winnings are subject to verification and may be withheld if terms are violated.</p>
-                                    <p>6) You are responsible for maintaining the confidentiality of your account credentials.</p>
-                                    <p>7) The platform is not responsible for any technical issues that may affect betting outcomes.</p>
-                                    <p>8) Promotional offers are subject to specific terms and wagering requirements.</p>
-                                    <p>9) Gambling can be addictive - please play responsibly and seek help if needed.</p>
-                                    <p>10) The platform may modify these terms at any time, with changes effective immediately upon posting.</p>
-                                </div>
-
-                                <div class="col-12">
-                                    <q-checkbox class="q-pl-none" v-model="form.agree" label="I Agree to the above terms and conditions and confirm I meet the age requirements." />
+                                <div class="text-subtitle2 text-bold">{{ opt.label }}</div>
+                                <div class="text-caption text-grey-7 q-mb-sm">{{ opt.description }}</div>
+                                <div class="text-caption">
+                                    <q-badge color="primary" class="q-mr-sm">Bets: {{ opt.total_bets }}</q-badge>
+                                    <q-badge color="green" class="q-mr-sm">₹{{ opt.total_amount.toLocaleString() }}</q-badge>
+                                    <q-badge color="amber" outline>Odds: {{ opt.odds }}x</q-badge>
                                 </div>
                             </q-card-section>
                         </q-card>
@@ -72,16 +49,40 @@
                 </div>
             </q-card-section>
 
+            <!-- Terms -->
+            <q-card-section>
+                <q-card bordered class="bg-grey-1">
+                    <q-card-section class="scroll" style="max-height: 260px;">
+                        <div class="text-caption q-mb-sm" v-for="(line, i) in terms" :key="i">
+                            {{ i + 1 }}) {{ line }}
+                        </div>
+                        <q-checkbox
+                            class="q-mt-sm"
+                            v-model="form.agree"
+                            label="I Agree to the terms and confirm I meet the age requirements."
+                        />
+                    </q-card-section>
+                </q-card>
+            </q-card-section>
+
+            <!-- Action Buttons -->
             <q-separator />
-
-
-            <div class="col-12 flex justify-center items-center q-gutter-lg p-4">
-                <q-btn class="sized-btn" @click="$inertia.get(route('player.events.index'))" rounded outline label="Back" color="accent" no-caps/>
-                <q-btn icon="casino" :disable="!!!form.agree" @click="showDialog = true" class="sized-btn" type="submit" rounded  label="Place a Bet" color="primary"  no-caps/>
-            </div>
+            <q-card-section class="row justify-center q-gutter-md">
+                <q-btn label="Back" @click="$inertia.get(route('player.events.index'))" outline rounded color="accent" no-caps />
+                <q-btn
+                    label="Place a Bet"
+                    rounded
+                    color="primary"
+                    no-caps
+                    :disable="!form.agree"
+                    @click="showDialog = true"
+                />
+            </q-card-section>
         </q-card>
-        <q-dialog v-model="showDialog">
-            <q-card class="q-pa-md" style="min-width: 300px; max-width: 500px;">
+
+        <!-- Dialog -->
+        <q-dialog v-model="showDialog" persistent>
+            <q-card class="q-pa-md" style="width: 100%; max-width: 450px;">
                 <q-card-section>
                     <div class="text-h6">Place Your Bet</div>
                 </q-card-section>
@@ -89,34 +90,33 @@
                 <q-card-section>
                     <q-select
                         v-model="form.event_option_id"
-                        :options="props.event.options.map(opt => ({ label: opt.label, value: opt.id }))"
+                        :options="event.options.map(opt => ({ label: opt.label, value: opt.id }))"
                         label="Select Option"
-                        dense outlined emit-value map-options
+                        dense
+                        outlined
+                        emit-value
+                        map-options
                         :error="!!form.errors.event_option_id"
                         :error-message="form.errors.event_option_id"
                     />
 
-                    <!-- Show odds immediately -->
-                    <div v-if="selectedOption" class="q-mt-sm text-subtitle2">
-                        <q-badge color="blue" outline>
-                            Odds for "{{ selectedOption.label }}": <strong>{{ selectedOption.odds }}x</strong>
-                        </q-badge>
+                    <div v-if="selectedOption" class="q-mt-sm text-caption text-blue">
+                        <q-icon name="trending_up" /> Odds for <strong>{{ selectedOption.label }}</strong>: {{ selectedOption.odds }}x
                     </div>
-
 
                     <q-input
                         v-model="form.amount"
                         type="number"
                         label="Enter Amount"
-                        dense outlined
+                        dense
+                        outlined
                         class="q-mt-sm"
                         min="1"
                         :error="!!form.errors.amount"
                         :error-message="form.errors.amount"
                     />
 
-                    <!-- Expected payout -->
-                    <div v-if="selectedOption && form.amount" class="q-mt-md text-caption">
+                    <div v-if="selectedOption && form.amount" class="q-mt-md">
                         <q-badge color="green" outline>
                             Expected Payout: ₹{{ expectedPayout }}
                         </q-badge>
@@ -129,16 +129,15 @@
                         label="Submit Bet"
                         color="primary"
                         :disable="!form.event_option_id || form.amount <= 0"
-                        @click="onSubmit"
                         :loading="form.processing"
+                        @click="onSubmit"
                     />
                 </q-card-actions>
             </q-card>
         </q-dialog>
-
-
     </q-page>
 </template>
+
 <script setup>
 import BackendLayout from "../../../../Layouts/BackendLayout.vue";
 import { usePage, useForm } from '@inertiajs/vue3';
@@ -169,6 +168,15 @@ const expectedPayout = computed(() => {
     if (!selectedOption.value || !form.amount) return 0
     return (parseFloat(form.amount) * parseFloat(selectedOption.value.odds)).toFixed(2)
 })
+
+const terms = [
+    'You must be at least 18 years of age or the legal gambling age in your jurisdiction to participate.',
+    'By using this platform, you agree to abide by all applicable laws and regulations.',
+    'All bets placed are final and cannot be canceled or changed once confirmed.',
+    'The platform is not responsible for any technical issues that may affect betting outcomes.',
+    'Gambling can be addictive - please play responsibly and seek help if needed.',
+]
+
 const onSubmit=e=>{
     q.dialog({
         title:'Confirmation',
@@ -229,6 +237,7 @@ const initPaytm = data => {
 onMounted(() => {
     let scriptElement = document.createElement('script')
     scriptElement.setAttribute('src', 'https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/Resell00448805757124.js')
+    // scriptElement.setAttribute('src', 'https://securestage.paytmpayments.com/merchantpgpui/checkoutjs/merchants/Resell00448805757124.js')
     document.head.appendChild(scriptElement)
 })
 

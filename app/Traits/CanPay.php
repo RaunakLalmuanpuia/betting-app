@@ -43,8 +43,9 @@ trait CanPay{
             "channelId" => 'WEB'
         );
 
+        // "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid="
         $url = env('APP_DEBUG')
-            ? "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=" . env('MID') . "&orderId=" . $order_id
+            ? "https://securestage.paytmpayments.com/theia/api/v1/initiateTransaction?mid=" . env('MID') . "&orderId=" . $order_id
             : "https://secure.paytmpayments.com/theia/api/v1/initiateTransaction?mid=" . env('MID') . "&orderId=" . $order_id;
 
         $response = Http::withHeaders([

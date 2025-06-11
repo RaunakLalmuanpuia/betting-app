@@ -88,14 +88,14 @@
 
                 <q-separator class="q-my-sm"/>
 
-                <q-item :active="route().current()==='bets.index'" active
+                <q-item :active="route().current()==='player.bets.index'" active
                         active-class="active-menu text-accent"
                         clickable
-                        @click="$inertia.get(route('bets.index'))">
+                        @click="$inertia.get(route('player.bets.index'))">
                     <q-item-section avatar>
                         <q-icon>
 
-                            <svg v-if="route().current()==='bets.index'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg v-if="route().current()==='player.bets.index'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.5h13.5a.5.5 0 0 1 .5.5v6.938l1.5-1.52V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a8 8 0 0 0 8 8h7.5a2 2 0 0 0 2-2v-3.038l-1.5 1.52V23a.5.5 0 0 1-.5.5H12A6.5 6.5 0 0 1 5.5 17V5a.5.5 0 0 1 .5-.5z" fill="#306ADB"/>
                                 <path fill="#306ADB" d="M5 18h7v1.5H5z"/>
                                 <path fill="#306ADB" d="M11 24v-6h1.5v6z"/>

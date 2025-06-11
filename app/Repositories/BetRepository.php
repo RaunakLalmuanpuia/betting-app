@@ -52,9 +52,8 @@ class BetRepository implements BetInterface
 
         $bets = $user->bets()
             ->with([
-                'event',
+                'event.options',
                 'option',
-                'payments',
                 'transactions',
             ])
             ->orderByDesc('created_at')

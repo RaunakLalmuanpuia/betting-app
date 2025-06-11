@@ -31,7 +31,6 @@
                                         <div class="text-subtitle1 text-white">Loading...</div>
                                     </template>
                                 </q-img>
-
                                 <q-separator />
 
                                 <q-card-section class="text-h5 text-center">
