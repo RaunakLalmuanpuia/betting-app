@@ -1,14 +1,13 @@
 
 <template>
     <div class="q-mb-md">
-        <q-banner v-if="bets.length === 0" class="bg-grey-3 text-grey-8">
+        <q-banner v-if="bets.length === 0" class="bg-grey-3 text-grey-8 text-center">
             No bets placed yet.
         </q-banner>
 
         <q-table
             v-else
             flat
-            bordered
             :rows="bets"
             :columns="columns"
             row-key="id"
@@ -91,32 +90,53 @@
 
         <!-- Transaction Dialog -->
         <q-dialog v-model="transactionDialog">
-            <q-card style="min-width: 400px">
+            <q-card style="width: 100%; max-width: 600px" class="q-pa-md">
                 <q-card-section>
                     <div class="text-h6">Transaction History</div>
                 </q-card-section>
+
                 <q-separator />
-                <q-card-section>
-                    <q-timeline color="secondary">
-                        <q-timeline-entry
-                            v-for="txn in selectedBet?.transactions || []"
-                            :key="txn.id"
-                            :icon="getTransactionIcon(txn.type)"
-                            :color="getTransactionColor(txn.type)"
-                            :subtitle="formatDate(txn.created_at)"
-                        >
-                            <template v-slot:title>
-                                {{ formatTransactionType(txn.type) }} - ₹{{ txn.amount }}
-                            </template>
-                            <div>{{ txn.remarks }}</div>
-                            <div v-if="txn.reference" class="text-caption text-grey-7">
-                                Ref: {{ txn.reference }}
-                            </div>
-                        </q-timeline-entry>
-                    </q-timeline>
+
+                <q-card-section style="max-height: 60vh; overflow-y: auto;" class="q-gutter-y-md">
+                    <q-item>
+                        <q-item-section><strong>Order ID:</strong></q-item-section>
+                        <q-item-section>{{ selectedBet.transactions?.order_id }}</q-item-section>
+                    </q-item>
+
+                    <q-item>
+                        <q-item-section><strong>Transaction ID:</strong></q-item-section>
+                        <q-item-section>{{ selectedBet.transactions?.transaction_id }}</q-item-section>
+                    </q-item>
+
+                    <q-item>
+                        <q-item-section><strong>Amount:</strong></q-item-section>
+                        <q-item-section>₹{{ selectedBet.transactions?.amount }}</q-item-section>
+                    </q-item>
+
+                    <q-item>
+                        <q-item-section><strong>Status:</strong></q-item-section>
+                        <q-item-section>{{ selectedBet.transactions?.status }}</q-item-section>
+                    </q-item>
+
+                    <q-item>
+                        <q-item-section><strong>Message:</strong></q-item-section>
+                        <q-item-section>{{ selectedBet.transactions?.msg }}</q-item-section>
+                    </q-item>
+
                 </q-card-section>
-                <q-separator />
+
                 <q-card-actions align="right">
+                    <q-btn
+                        v-if="selectedBet.transactions.status !== 'TXN_SUCCESS' && selectedBet.transactions.status !== 'TXN_FAILURE'"
+                        class="sized-btn"
+                        @click="handleVerify(selectedBet.transactions?.order_id)"
+                        color="accent"
+                        rounded
+                        outline
+                        label="Verify Payment"
+                        no-caps
+                    />
+                    <q-btn v-else label="Download PDF" icon="download" color="primary" flat @click="downloadPDF" />
                     <q-btn flat label="Close" color="primary" v-close-popup />
                 </q-card-actions>
             </q-card>
@@ -127,6 +147,7 @@
 <script setup>
 import { ref } from 'vue';
 import { date } from 'quasar';
+import {router} from "@inertiajs/vue3";
 
 defineProps({
     bets: Array
@@ -161,31 +182,18 @@ const getStatusColor = (status) => {
     }
 };
 
-const getTransactionIcon = (type) => {
-    switch (type?.toLowerCase()) {
-        case 'payment_received': return 'mdi-arrow-down-circle';
-        case 'payout_sent': return 'mdi-arrow-up-circle';
-        case 'bet_placed': return 'mdi-dice-multiple';
-        default: return 'mdi-swap-horizontal';
-    }
-};
 
-const getTransactionColor = (type) => {
-    switch (type?.toLowerCase()) {
-        case 'payment_received':
-        case 'payout_sent': return 'positive';
-        case 'bet_placed': return 'negative';
-        default: return 'info';
-    }
-};
 
-const formatTransactionType = (type) => {
-    return type
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-};
-
+const handleVerify=(orderId)=>{
+    router.post(route('player.events.payment.verify',orderId),{},{
+        preserveState:false,
+        onSuccess:params => q.loading.show({
+            boxClass: 'bg-grey-2 text-grey-9',
+            spinnerColor: 'primary', message: ' Verifying Payment...'
+        }),
+        onFinish:params => q.loading.hide()
+    })
+}
 const formatDate = (dateString) => {
     return date.formatDate(dateString, 'YYYY-MM-DD HH:mm');
 };

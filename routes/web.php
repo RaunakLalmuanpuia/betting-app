@@ -54,7 +54,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], 
     Route::get('event', [PlayerEventController::class, 'index'])->name('events.index');
     Route::get('event/{event}/show', [PlayerEventController::class, 'show'])->name('events.show');
     Route::post('event/{event}/place-bet', [PlayerEventController::class, 'placeBet'])->name('events.place-bet');
+    Route::post('event/payment/{orderId}/verify', [PlayerEventController::class, 'verifyPayment'])->name('events.payment.verify');
 });
+
 
 Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], function () {
     Route::get('bets', [PlayerBetController::class, 'index'])->name('bets.index');

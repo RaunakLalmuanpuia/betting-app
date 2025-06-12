@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Player;
 
+use App\Constants\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Transaction;
 use App\Repositories\BetRepository;
 use App\Traits\CanPay;
 use App\Util\SequenceGenerator;
@@ -155,6 +157,30 @@ class EventController extends Controller
             'order_id'=>$orderId,
             'token'=>$token,
             'amount' => $amount,
+        ]);
+    }
+
+    public function verifyPayment(string $orderId){
+
+        $result=$this->checkTransaction($orderId);
+
+        $payment=Transaction::query()->where('order_id', $orderId)->first();
+
+        $body = $result['body'];
+        $payment->status = $body['resultInfo']['resultStatus'];
+        $payment->msg = $body['resultInfo']['resultMsg'];
+        $payment->transaction_id = $body['txnId'];
+        $payment->extra = json_encode($body);
+        $payment->save();
+
+        //update bet's transaction_status
+        $bet = $payment->bet()->first();
+        $bet->transaction_id =  $body['txnId'];
+        $bet->transaction_status = $body['resultInfo']['resultStatus'];
+        $bet->save();
+
+        return inertia('Backend/Apply/Receipt', [
+            'data' => $payment->load(['user', 'bet.option', 'bet.event'])
         ]);
     }
 }

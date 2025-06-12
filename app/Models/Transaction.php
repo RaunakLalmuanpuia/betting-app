@@ -19,7 +19,7 @@ class Transaction extends Model
         'amount',
         'reference',
         'status',
-        'remarks',
+        'remark',
         'msg',
         'extra',
         'transaction_date',
