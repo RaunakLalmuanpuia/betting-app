@@ -12,6 +12,9 @@ use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\Player\EventController as PlayerEventController;
 use App\Http\Controllers\Player\BetController as PlayerBetController;
 
+
+use App\Http\Controllers\Admin\EventController as AdminEventController;
+
 Route::get('/', function () {
     return Inertia::render('Home');
 });
@@ -50,6 +53,7 @@ Route::group(['middleware'=>'auth'], function () {
 
 });
 
+//Player Event
 Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], function () {
     Route::get('event', [PlayerEventController::class, 'index'])->name('events.index');
     Route::get('event/{event}/show', [PlayerEventController::class, 'show'])->name('events.show');
@@ -57,14 +61,25 @@ Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], 
     Route::post('event/payment/{orderId}/verify', [PlayerEventController::class, 'verifyPayment'])->name('events.payment.verify');
 });
 
-
+// Player Bets
 Route::group(['middleware' => 'auth', 'prefix' => 'player', 'as' => 'player.'], function () {
     Route::get('bets', [PlayerBetController::class, 'index'])->name('bets.index');
 });
 
 
+//Payment Callback
 Route::group(['prefix'=>'callback'], function () {
     Route::post('place-bet', [PaymentCallbackController::class, 'callback'])->name('callback.place-bet');
 });
+
+// Admin Events
+Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::get('event', [AdminEventController::class, 'index'])->name('events.index');
+    Route::get('event/{event}/show', [PlayerEventController::class, 'show'])->name('events.show');
+    Route::post('event/{event}/place-bet', [PlayerEventController::class, 'placeBet'])->name('events.place-bet');
+    Route::post('event/payment/{orderId}/verify', [PlayerEventController::class, 'verifyPayment'])->name('events.payment.verify');
+});
+
+
 
 
