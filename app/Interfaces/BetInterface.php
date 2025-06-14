@@ -13,4 +13,6 @@ interface BetInterface
     public function makeBet(User $user, Event $event,$option,$orderId,float $amount):mixed;
 
     public function settleEventBets(Event $event): void;
+
+    public function getAllBets(array $filters, int $perPage = 15);
 }

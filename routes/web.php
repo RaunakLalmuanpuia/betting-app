@@ -14,6 +14,7 @@ use App\Http\Controllers\Player\BetController as PlayerBetController;
 
 
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\BetController as AdminBetController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -84,6 +85,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], fu
     Route::post('/events/{event}/set-winning-option', [AdminEventController::class, 'setWinningOption'])->name('events.setWinningOption');
     Route::get('events/{event}/json', [AdminEventController::class, 'jsonShow'])->name('events.json-show');
 });
+
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/bets', [\App\Http\Controllers\Admin\BetController::class, 'index'])->name('bets.index');
+});
+// Admin Bets
+Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::get('bet', [AdminBetController::class, 'index'])->name('bets.index');
+});
+
 
 
 

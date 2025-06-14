@@ -88,4 +88,24 @@ class BetRepository implements BetInterface
             return true;
         });
     }
+
+
+    public function getAllBets(array $filters, int $perPage = 15)
+    {
+        return Bet::with(['user', 'event', 'option', 'transactions'])
+            ->when($filters['search'] ?? null, function ($query, $search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery->whereHas('user', fn($q) =>
+                    $q->where('name', 'like', "%$search%")
+                        ->orWhere('mobile', 'like', "%$search%")
+                    )
+                        ->orWhere('amount', 'like', "%$search%")
+                        ->orWhere('bet_uuid', 'like', "%$search%");
+                });
+            })
+            ->when($filters['event_id'] ?? null, fn($q, $eventId) => $q->where('event_id', $eventId))
+            ->orderByDesc('created_at')
+            ->paginate($perPage)
+            ->withQueryString();
+    }
 }
