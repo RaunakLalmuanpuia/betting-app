@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventOption;
+use App\Repositories\BetRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
     //
+    private BetRepository $repository;
+    public function __construct(BetRepository $betRepository)
+    {
+        $this->repository = $betRepository;
+    }
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 5);
@@ -135,9 +141,28 @@ class EventController extends Controller
     {
         $event->delete(); // soft delete
 
-        return redirect()->route('admin.events.index')
-            ->with('success', 'Event deleted successfully.');
+        return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
     }
 
+    public function setWinningOption(Request $request, Event $event)
+    {
+        $request->validate([
+            'winning_option_id' => 'required|exists:event_options,id',
+        ]);
+
+        $event->winning_option_id = $request->winning_option_id;
+        $event->status = 'settled';
+        $event->save();
+
+        $this->repository->settleEventBets($event);
+
+        return redirect()->route('admin.events.index')->with('success', 'Winning option set successfully.');
+
+    }
+    public function jsonShow(Event $event)
+    {
+        $event->load(['winningOption', 'options', 'bets']);
+        return response()->json($event);
+    }
 
 }

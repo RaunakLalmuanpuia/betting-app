@@ -90,4 +90,32 @@ class BetRepository implements BetInterface
             return $bet;
         });
     }
+
+    public function settleEventBets(Event $event): void
+    {
+        $event->load('bets');
+
+        $allBets = $event->bets;
+        $totalPool = $allBets->sum('amount');
+
+        $winningOptionId = $event->winning_option_id;
+        $winningBets = $allBets->where('event_option_id', $winningOptionId);
+        $totalWinningAmount = $winningBets->sum('amount');
+
+        DB::transaction(function () use ($allBets, $winningOptionId, $totalPool, $totalWinningAmount) {
+            foreach ($allBets as $bet) {
+                if ($bet->event_option_id == $winningOptionId && $totalWinningAmount > 0) {
+                    $share = $bet->amount / $totalWinningAmount;
+                    $payout = $totalPool * $share;
+
+                    $bet->is_winner = true;
+                    $bet->payout_amount = $payout;
+                } else {
+                    $bet->is_winner = false;
+                    $bet->payout_amount = 0;
+                }
+                $bet->save();
+            }
+        });
+    }
 }

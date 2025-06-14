@@ -40,25 +40,76 @@
                     <template #body-cell-actions="props">
                         <q-td align="center">
                             <q-btn
-                                color="primary"
-                                label="View"
-                                size="sm"
+                                dense
                                 flat
-                                :to="`/admin/events/${props.row.id}`"
-                            />
-                            <q-btn
+                                icon="more_vert"
                                 color="primary"
-                                label="Edit"
-                                size="sm"
-                                flat
-                                @click="$inertia.get(route('admin.events.edit',props.row))"
+                                round
+                            >
+                                <q-menu>
+                                    <q-list style="min-width: 100px">
+                                        <q-item
+                                            clickable
+                                            :to="`/admin/events/${props.row.id}`"
+                                        >
+                                            <q-item-section>View</q-item-section>
+                                        </q-item>
+                                        <q-item clickable @click="openWinningOptionDialog(props.row)">
+                                            <q-item-section>Set Winning Option</q-item-section>
+                                        </q-item>
 
-                            />
+
+                                        <q-item
+                                            clickable
+                                            @click="$inertia.get(route('admin.events.edit', props.row))"
+                                        >
+                                            <q-item-section>Edit</q-item-section>
+                                        </q-item>
+
+                                        <q-item
+                                            clickable @click="confirmDeleteEvent(props.row.id)">
+                                            <q-item-section>Delete</q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-menu>
+                            </q-btn>
                         </q-td>
                     </template>
+
                 </q-table>
             </q-card-section>
         </q-card>
+
+
+        <q-dialog v-model="dialogVisible" persistent>
+            <q-card style="min-width: 300px">
+                <q-card-section>
+                    <div class="text-h6">Set Winning Option</div>
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-section>
+                    <q-select
+                        outlined
+                        v-model="selectedWinningOptionId"
+                        :options="availableOptions"
+                        label="Select Option"
+                        option-value="id"
+                        option-label="label"
+                        emit-value
+                        map-options
+                        dense
+                    />
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancel" color="primary" v-close-popup />
+                    <q-btn flat label="Set" color="positive" @click="submitWinningOption" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+
     </q-page>
 </template>
 
@@ -66,9 +117,11 @@
 import BackendLayout from "../../../../Layouts/BackendLayout.vue";
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
+import {Quasar, useQuasar} from "quasar";
 
 defineOptions({ layout: BackendLayout });
 
+const $q =useQuasar();
 const props = defineProps({
     events: Array,
     pagination: Object,
@@ -83,6 +136,64 @@ const pagination = ref({
     rowsPerPage: props.pagination.rowsPerPage,
     rowsNumber: props.pagination.rowsNumber,
 });
+
+const dialogVisible = ref(false);
+const selectedEventId = ref(null);
+const selectedWinningOptionId = ref(null);
+const availableOptions = ref([]);
+
+const openWinningOptionDialog = (event) => {
+    selectedEventId.value = event.id;
+    selectedWinningOptionId.value = event.winning_option_id || null;
+    availableOptions.value = event.options;
+    dialogVisible.value = true;
+};
+
+const submitWinningOption = () => {
+    router.post(
+        route('admin.events.setWinningOption', selectedEventId.value),
+        { winning_option_id: selectedWinningOptionId.value },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Fetch updated row
+                axios.get(route('admin.events.json-show', selectedEventId.value)).then(({ data }) => {
+                    const index = serverRows.value.findIndex(row => row.id === data.id);
+                    if (index !== -1) {
+                        serverRows.value[index] = data;
+                    }
+                });
+
+                dialogVisible.value = false;
+            }
+        }
+    );
+};
+const confirmDeleteEvent = (id) => {
+    $q.dialog({
+        title: 'Confirm',
+        message: 'Are you sure you want to delete this event?',
+        cancel: true,
+        persistent: true
+    }).onOk(() => {
+        router.delete(route('admin.events.destroy', id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Remove the row from table
+                const index = serverRows.value.findIndex(row => row.id === id);
+                if (index !== -1) {
+                    serverRows.value.splice(index, 1);
+                }
+                $q.notify({
+                    message: 'Event deleted successfully',
+                    color: 'positive',
+                    position: 'top-right'
+                });
+            }
+        });
+    });
+};
+
 
 const onSearch = () => {
     router.get(

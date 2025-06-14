@@ -80,6 +80,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], fu
     Route::get('event/{event}/edit', [AdminEventController::class, 'edit'])->name('events.edit');
     Route::post('event/{event}', [AdminEventController::class, 'update'])->name('events.update');
     Route::delete('events/{event}', [AdminEventController::class, 'destroy'])->name('events.destroy');
+    Route::post('/events/{event}/set-winning-option', [AdminEventController::class, 'setWinningOption'])->name('events.setWinningOption');
+    Route::get('events/{event}/json', [AdminEventController::class, 'jsonShow'])->name('events.json-show');
 });
 
 
