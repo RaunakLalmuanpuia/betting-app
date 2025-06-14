@@ -45,7 +45,46 @@ class EventController extends Controller
             ]
         ]);
     }
+    public function show(Event $event)
+    {
 
+        $totalAmountAllOptions = $event->bets()->sum('amount');
+
+        $options = $event->options->map(function ($option) use ($event, $totalAmountAllOptions) {
+            $optionTotalAmount = $option->bets->sum('amount');
+            return [
+                'label' => $option->label,
+                'total_bets' => $option->bets->count(),
+                'total_amount' => $optionTotalAmount,
+                'odds' => $optionTotalAmount > 0 ? round($totalAmountAllOptions / $optionTotalAmount, 2) : '-',
+                'is_winner' => $event->winning_option_id === $option->id,
+            ];
+        });
+
+        $stats = [
+            'total_bets' => $event->bets()->count(),
+            'total_amount' => $event->bets()->sum('amount'),
+            'unique_users' => $event->bets()->distinct('user_id')->count(),
+            'winners' => $event->bets()->where('is_winner', true)->count(),
+            'total_payout' => $event->bets()->where('is_winner', true)->sum('payout_amount'),
+        ];
+        $winningSummary = null;
+
+        if ($event->winning_option_id) {
+            $winningSummary = [
+                'label' => optional($event->winningOption)->label,
+                'winners' => $event->bets()->where('is_winner', true)->count(),
+                'total_payout' => $event->bets()->where('is_winner', true)->sum('payout_amount'),
+                'unpaid_winners' => $event->bets()->where('is_winner', true)->where('is_paid', false)->count(),
+            ];
+        }
+        return Inertia::render('Backend/Admin/Event/Show', [
+            'event' => $event,
+            'options' =>$options,
+            'stats' => $stats,
+            'winning_summary' => $winningSummary,
+        ]);
+    }
     public function create(){
         return Inertia::render('Backend/Admin/Event/Create');
     }

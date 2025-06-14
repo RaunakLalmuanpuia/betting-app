@@ -17,35 +17,6 @@ use Illuminate\Support\Facades\DB;
 
 class BetRepository implements BetInterface
 {
-    public function all()
-    {
-        return Post::all();
-    }
-
-    public function find($id)
-    {
-        return Post::findOrFail($id);
-    }
-
-    public function create(array $data)
-    {
-        return Post::create($data);
-    }
-
-    public function update($id, array $data)
-    {
-        $post = Post::findOrFail($id);
-        $post->update($data);
-        return $post;
-    }
-
-    public function delete($id)
-    {
-        $post = Post::findOrFail($id);
-        $post->delete();
-        return true;
-    }
-
     public function getBetsByUser(){
 
         $user = Auth::user();
@@ -61,7 +32,6 @@ class BetRepository implements BetInterface
 
         return $bets;
     }
-
     public function makeBet(User $user, Event $event,$option, $orderId,float $amount): mixed
     {
         return DB::transaction(function () use ($user, $event, $option, $orderId, $amount) {
@@ -90,7 +60,6 @@ class BetRepository implements BetInterface
             return $bet;
         });
     }
-
     public function settleEventBets(Event $event): void
     {
         $event->load('bets');
@@ -116,6 +85,7 @@ class BetRepository implements BetInterface
                 }
                 $bet->save();
             }
+            return true;
         });
     }
 }

@@ -50,7 +50,7 @@
                                     <q-list style="min-width: 100px">
                                         <q-item
                                             clickable
-                                            :to="`/admin/events/${props.row.id}`"
+                                            @click="$inertia.get(route('admin.events.show', props.row))"
                                         >
                                             <q-item-section>View</q-item-section>
                                         </q-item>

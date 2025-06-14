@@ -75,6 +75,7 @@ Route::group(['prefix'=>'callback'], function () {
 // Admin Events
 Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('event', [AdminEventController::class, 'index'])->name('events.index');
+    Route::get('event/{event}/show', [AdminEventController::class, 'show'])->name('events.show');
     Route::get('event/create', [AdminEventController::class, 'create'])->name('events.create');
     Route::post('event/store', [AdminEventController::class, 'store'])->name('events.store');
     Route::get('event/{event}/edit', [AdminEventController::class, 'edit'])->name('events.edit');
