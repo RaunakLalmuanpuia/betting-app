@@ -2,7 +2,7 @@
     <q-page padding>
         <q-card class="bg-white text-dark shadow-2 rounded-borders q-mx-auto" style="max-width: 1000px;">
             <!-- Event Banner -->
-            <q-img :src="event.image" height="220px" contain class="rounded-borders-top" />
+            <q-img :src="`/storage/${event.image}`" height="220px" contain class="rounded-borders-top" />
 
             <!-- Event Title & Info -->
             <q-card-section class="text-center">
@@ -34,7 +34,7 @@
                         class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
                     >
                         <q-card bordered class="q-hoverable transition-all">
-                            <q-img :src="opt.image" height="120px" contain class="rounded-borders-top" />
+                            <q-img :src="`/storage/${opt.image}`" height="120px" contain class="rounded-borders-top" />
                             <q-card-section>
                                 <div class="text-subtitle2 text-bold">{{ opt.label }}</div>
                                 <div class="text-caption text-grey-7 q-mb-sm">{{ opt.description }}</div>

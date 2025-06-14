@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\EventOption;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -38,4 +39,105 @@ class EventController extends Controller
             ]
         ]);
     }
+
+    public function create(){
+        return Inertia::render('Backend/Admin/Event/Create');
+    }
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'bet_closes_at' => 'required|date',
+            'status' => 'required|in:open,closed,settled',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'options' => 'required|array|size:2',
+            'options.*.label' => 'required|string|max:255',
+            'options.*.description' => 'nullable|string',
+            'options.*.image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('events', 'public');
+        }
+
+        $options = [];
+
+        foreach ($request->file('options', []) as $index => $fileArray) {
+            $options[$index] = $data['options'][$index];
+            if (isset($fileArray['image'])) {
+                $options[$index]['image'] = $fileArray['image']->store('event_options', 'public');
+            }
+        }
+
+        $event = Event::create($data);
+
+        foreach ($options as $option) {
+            $event->options()->create($option);
+        }
+
+        return redirect()->route('admin.events.index')->with('success', 'Event created successfully.');
+    }
+
+    public function edit(Event $event)
+    {
+        $event->load('options');
+
+        return Inertia::render('Backend/Admin/Event/Edit', [
+            'event' => $event
+        ]);
+    }
+    public function update(Request $request, Event $event)
+    {
+        // Validate incoming request
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'bet_closes_at' => 'required|date',
+            'status' => 'required|in:open,closed,settled',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+
+            'options' => 'required|array|size:2',
+            'options.*.id' => 'required|exists:event_options,id',
+            'options.*.label' => 'required|string|max:255',
+            'options.*.description' => 'nullable|string',
+            'options.*.image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // Update main event details
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('events', 'public');
+        } else {
+            unset($data['image']); // prevent overriding with null
+        }
+
+        $event->update($data);
+
+        // Update each option
+        foreach ($data['options'] as $index => $optionData) {
+            $option = EventOption::find($optionData['id']);
+
+            // Handle image upload if present
+            if ($request->hasFile("options.{$index}.image")) {
+                $optionData['image'] = $request->file("options.{$index}.image")->store('event_options', 'public');
+            } else {
+                unset($optionData['image']);
+            }
+
+            // Update the option
+            $option->update($optionData);
+        }
+
+        return redirect()->route('admin.events.index')->with('success', 'Event updated successfully.');
+    }
+
+    public function destroy(Event $event)
+    {
+        $event->delete(); // soft delete
+
+        return redirect()->route('admin.events.index')
+            ->with('success', 'Event deleted successfully.');
+    }
+
+
 }

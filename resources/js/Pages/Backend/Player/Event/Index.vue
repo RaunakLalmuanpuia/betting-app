@@ -26,7 +26,7 @@
                     >
                         <div class="column full-height">
                             <q-card class="text-white bg-grey-6 fit column justify-between">
-                                <q-img :src="event.img">
+                                <q-img :src="`/storage/${event.img}`" height="220px" contain class="rounded-borders-top" >
                                     <template #loading>
                                         <div class="text-subtitle1 text-white">Loading...</div>
                                     </template>

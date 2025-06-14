@@ -75,9 +75,11 @@ Route::group(['prefix'=>'callback'], function () {
 // Admin Events
 Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('event', [AdminEventController::class, 'index'])->name('events.index');
-    Route::get('event/{event}/show', [PlayerEventController::class, 'show'])->name('events.show');
-    Route::post('event/{event}/place-bet', [PlayerEventController::class, 'placeBet'])->name('events.place-bet');
-    Route::post('event/payment/{orderId}/verify', [PlayerEventController::class, 'verifyPayment'])->name('events.payment.verify');
+    Route::get('event/create', [AdminEventController::class, 'create'])->name('events.create');
+    Route::post('event/store', [AdminEventController::class, 'store'])->name('events.store');
+    Route::get('event/{event}/edit', [AdminEventController::class, 'edit'])->name('events.edit');
+    Route::post('event/{event}', [AdminEventController::class, 'update'])->name('events.update');
+    Route::delete('events/{event}', [AdminEventController::class, 'destroy'])->name('events.destroy');
 });
 
 

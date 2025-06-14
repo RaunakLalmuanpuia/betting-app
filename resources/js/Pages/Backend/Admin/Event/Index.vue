@@ -18,7 +18,7 @@
                     flat
                     color="btn-primary"
                     outline
-
+                    @click="$inertia.get(route('admin.events.create'))"
                 />
 
             </q-card-section>
@@ -51,7 +51,8 @@
                                 label="Edit"
                                 size="sm"
                                 flat
-                                :to="`/admin/events/${props.row.id}/edit`"
+                                @click="$inertia.get(route('admin.events.edit',props.row))"
+
                             />
                         </q-td>
                     </template>
