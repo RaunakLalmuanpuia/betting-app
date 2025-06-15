@@ -13,6 +13,8 @@ class PayoutController extends Controller
 
     public function index(Request $request)
     {
+        $perPage = $request->get('per_page', 15);
+
         // Base query for winning bets
         $baseQuery = Bet::with(['user', 'event', 'option', 'transactions'])
             ->where('is_winner', true);
@@ -30,7 +32,7 @@ class PayoutController extends Controller
         $statsQuery = clone $baseQuery;
 
         // Paginated data
-        $bets = $baseQuery->orderByDesc('created_at')->paginate(15)->withQueryString();
+        $bets = $baseQuery->orderByDesc('created_at')->paginate($perPage)->withQueryString();
 
         $statsRaw = $statsQuery
             ->selectRaw("
@@ -59,4 +61,6 @@ class PayoutController extends Controller
             'stats' => $stats,
         ]);
     }
+
+
 }

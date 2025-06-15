@@ -8,7 +8,7 @@
 
             <!-- Header Section -->
             <q-card-section class="row items-center justify-between q-gutter-md">
-                <div class="text-h6 text-primary">🎯 Bet Payouts</div>
+                <div class="text-h6 text-primary">Bet Payouts</div>
                 <q-input
                     v-model="search"
                     debounce="500"
@@ -39,8 +39,13 @@
                 class="q-mt-sm"
                 separator="horizontal"
                 no-data-label="No bets found"
+                v-model:pagination="pagination"
+                :rows-per-page-options="[5, 10, 15, 25, 50, 100]"
+                :loading="loading"
+                @request="onRequest"
             >
-                <!-- Action Column Slot -->
+
+            <!-- Action Column Slot -->
                 <template #body-cell-action="props">
                     <q-td :props="props" class="text-center">
                         <q-btn-dropdown
@@ -160,17 +165,40 @@ const statCards = computed(() => ({
 
 
 const search = ref(props.filters.search || '')
-const page = ref(props.bets.current_page)
 const loading = ref(false)
+
+const pagination = computed(() => ({
+    page: props.bets.current_page,
+    rowsPerPage: props.bets.per_page,
+    rowsNumber: props.bets.total
+}))
+
+const onRequest = (params) => {
+    loading.value = true
+    router.get(route('admin.payout.index'), {
+        search: search.value,
+        page: params.pagination.page,
+        per_page: params.pagination.rowsPerPage
+    }, {
+        preserveState: true,
+        replace: true,
+        onFinish: () => {
+            loading.value = false
+        }
+    })
+}
 const handleSearch = () => {
     loading.value = true
     router.get(route('admin.payout.index'), {
         search: search.value,
-        page: 1
+        page: 1,
+        per_page: pagination.value.rowsPerPage
     }, {
         preserveState: true,
         replace: true,
-        onFinish: () => loading.value = false
+        onFinish: () => {
+            loading.value = false
+        }
     })
 }
 
