@@ -15,6 +15,7 @@ use App\Http\Controllers\Player\BetController as PlayerBetController;
 
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\BetController as AdminBetController;
+use App\Http\Controllers\Admin\PayoutController as AdminPayoutController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -93,6 +94,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // Admin Bets
 Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('bet', [AdminBetController::class, 'index'])->name('bets.index');
+});
+
+
+// Admin Payout
+Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::get('payout', [AdminPayoutController::class, 'index'])->name('payout.index');
 });
 
 
