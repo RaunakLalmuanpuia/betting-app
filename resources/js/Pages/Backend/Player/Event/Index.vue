@@ -1,100 +1,134 @@
 <template>
     <q-page padding>
         <q-card class="bg-transparent no-shadow no-border">
-            <q-card-section class="row">
-                <div class="col-12">
-                    <q-space />
+            <!-- Filter Dropdown -->
+            <q-card-section class="q-pa-none q-px-md q-mb-md">
+                <div class="row items-center justify-end">
                     <q-select
                         dense
                         outlined
-                        style="min-width: 200px"
                         v-model="type"
                         :options="['Open', 'Settled', 'Closed', 'All']"
-                        class="float-right"
-                        label="Category"
+                        label="Filter Events"
+                        style="min-width: 200px"
                         @update:model-value="changeType"
+                        class="q-ml-sm"
                     />
                 </div>
             </q-card-section>
 
-            <q-card-section class="q-mx-sm bg-transparent">
+            <!-- Events Listing -->
+            <q-card-section class="q-px-md">
                 <div class="row q-col-gutter-lg">
                     <div
-                        class="col-12 col-md-4"
+                        class="col-12 col-md-6 col-lg-4"
                         v-for="event in props.events"
                         :key="event.id"
                     >
-                        <div class="column full-height">
-                            <q-card class="text-white bg-grey-6 fit column justify-between">
-                                <q-img :src="`/storage/${event.img}`" height="220px" contain class="rounded-borders-top" >
-                                    <template #loading>
-                                        <div class="text-subtitle1 text-white">Loading...</div>
-                                    </template>
-                                </q-img>
-                                <q-separator />
-
-                                <q-card-section class="text-h5 text-center">
-                                    {{ event.event_name }}
-                                </q-card-section>
-
-                                <q-card-section class="text-justify">
-                                    <div>{{ event.text }}</div>
-                                    <div class="q-mt-sm text-caption">
-                                        <div><strong>Status:</strong> {{ event.type }}</div>
-                                        <div><strong>Event Start Time:</strong> {{ event.start_time }}</div>
-                                        <div><strong>Betting Closes At:</strong> {{ event.bet_closes_at }}</div>
-                                        <div>
-                                            <strong>Total Bets:</strong>
-                                            {{ event.options.reduce((acc, opt) => acc + opt.total_bets, 0) }}
-                                        </div>
-                                        <div>
-                                            <strong>Total Amount:</strong>
-                                            ₹{{ event.options.reduce((acc, opt) => acc + opt.total_amount, 0).toLocaleString() }}
-                                        </div>
-                                        <div v-if="event.type === 'Settled' && event.result">
-                                            <strong>Result:</strong>
-                                            {{ event.result.label }} (Payout: {{ event.result.payout }}x)
-                                        </div>
+                        <q-card class="bg-white shadow-2 rounded-xl column justify-between">
+                            <!-- Image -->
+                            <q-img
+                                :src="`/storage/${event.img}`"
+                                height="200px"
+                                class="rounded-t-xl"
+                                spinner-color="primary"
+                                :ratio="16/9"
+                            >
+                                <template #loading>
+                                    <div class="absolute-full flex flex-center text-white text-subtitle2">
+                                        Loading...
                                     </div>
-                                </q-card-section>
+                                </template>
+                            </q-img>
 
-                                <q-separator color="grey-5" />
+                            <!-- Event Title -->
+                            <q-card-section class="text-h6 text-center text-primary q-pt-md">
+                                {{ event.event_name }}
+                            </q-card-section>
 
-                                <q-card-section>
-                                    <div class="text-subtitle2 q-mb-sm">Options:</div>
-                                    <div v-for="(option, index) in event.options" :key="index" class="q-mb-sm">
-                                        <div class="text-bold">{{ option.label }}</div>
-                                        <div class="text-caption">
-                                            {{ option.total_bets }} Bets • ₹{{ option.total_amount.toLocaleString() }}
-                                            <span v-if="['Open', 'Closed'].includes(event.type)">
-                                                • Odds: {{ option.odds }}x
-                                            </span>
-                                        </div>
-                                    </div>
-                                </q-card-section>
+                            <!-- Event Metadata -->
+                            <q-card-section class="q-px-md q-pt-none">
+                                <q-list bordered separator>
+                                    <q-item dense>
+                                        <q-item-section avatar><q-icon name="info" /></q-item-section>
+                                        <q-item-section><strong>Status:</strong> {{ event.type }}</q-item-section>
+                                    </q-item>
+                                    <q-item dense>
+                                        <q-item-section avatar><q-icon name="event" /></q-item-section>
+                                        <q-item-section><strong>Starts:</strong> {{ event.start_time }}</q-item-section>
+                                    </q-item>
+                                    <q-item dense>
+                                        <q-item-section avatar><q-icon name="schedule" /></q-item-section>
+                                        <q-item-section><strong>Bet Closes:</strong> {{ event.bet_closes_at }}</q-item-section>
+                                    </q-item>
+                                    <q-item dense>
+                                        <q-item-section avatar><q-icon name="groups" /></q-item-section>
+                                        <q-item-section><strong>Total Bets:</strong> {{ event.options.reduce((acc, opt) => acc + opt.total_bets, 0) }}</q-item-section>
+                                    </q-item>
+                                    <q-item dense>
+                                        <q-item-section avatar><q-icon name="currency_rupee" /></q-item-section>
+                                        <q-item-section><strong>Total Amount:</strong> ₹{{ event.options.reduce((acc, opt) => acc + opt.total_amount, 0).toLocaleString() }}</q-item-section>
+                                    </q-item>
 
-                                <q-separator color="grey-5" />
+                                    <q-item v-if="event.type === 'Settled' && event.result" dense>
+                                        <q-item-section avatar><q-icon name="emoji_events" /></q-item-section>
+                                        <q-item-section><strong>Result:</strong> {{ event.result.label }} ({{ event.result.payout }}x)</q-item-section>
+                                    </q-item>
+                                </q-list>
+                            </q-card-section>
 
-                                <q-card-actions v-if="event.type === 'Open'">
-                                    <q-btn  @click="$inertia.get(route('player.events.show',event))" icon="remove_red_eye" flat label="Place Bet" />
-                                </q-card-actions>
-                            </q-card>
-                        </div>
+                            <!-- Options -->
+                            <!-- Options -->
+                            <q-card-section>
+                                <div class="text-subtitle2 text-primary q-mb-sm">Options</div>
+                                <q-list dense separator>
+                                    <q-item
+                                        v-for="(option, index) in event.options"
+                                        :key="index"
+                                        class="q-pa-sm"
+                                    >
+                                        <q-item-section>
+                                            <div class="text-bold">{{ option.label }}</div>
+                                            <div class="text-caption text-grey">
+                                                {{ option.total_bets }} Bets • ₹{{ option.total_amount.toLocaleString() }}
+                                                <span v-if="option.odds !== null">
+                                                    • <span class="text-positive">Odds: {{ option.odds }}x</span>
+                                                </span>
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </q-list>
+                            </q-card-section>
+
+                            <!-- Bet Button -->
+                            <q-card-actions align="center" v-if="event.type === 'Open'">
+                                <q-btn
+                                    @click="$inertia.get(route('player.events.show', event))"
+                                    icon="sports_mma"
+                                    color="primary"
+                                    label="Place Bet"
+                                    class="full-width"
+                                    unelevated
+                                />
+                            </q-card-actions>
+                        </q-card>
                     </div>
                 </div>
             </q-card-section>
 
-            <q-card-actions align="center">
+            <!-- Pagination -->
+            <q-card-actions align="center" class="q-py-md">
                 <q-pagination
                     v-model="page"
-                    :min="1"
                     :max="props.pagination.last_page"
-                    :input="true"
-                    input-class="text-orange-10"
+                    input
+                    input-class="text-primary"
+                    color="primary"
                     @update:model-value="changePage"
                 />
             </q-card-actions>
         </q-card>
+
     </q-page>
 </template>
 

@@ -27,6 +27,10 @@ class PayoutController extends Controller
                     ->orWhereHas('event', fn($q2) => $q2->where('title', 'like', "%{$search}%"));
             });
         }
+        // Apply is_paid filter if provided
+        if ($request->filled('filter')) {
+            $baseQuery->where('is_paid', (bool) $request->filter);
+        }
 
         // Clone query for stats (before pagination is applied)
         $statsQuery = clone $baseQuery;
@@ -57,7 +61,7 @@ class PayoutController extends Controller
 
         return Inertia::render('Backend/Admin/Payout/Index', [
             'bets' => $bets,
-            'filters' => $request->only('search'),
+            'filters' => $request->only(['search','filter']),
             'stats' => $stats,
         ]);
     }

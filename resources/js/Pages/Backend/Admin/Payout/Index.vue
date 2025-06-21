@@ -9,22 +9,42 @@
             <!-- Header Section -->
             <q-card-section class="row items-center justify-between q-gutter-md">
                 <div class="text-h6 text-primary">Bet Payouts</div>
-                <q-input
-                    v-model="search"
-                    debounce="500"
-                    outlined
-                    dense
-                    rounded
-                    color="primary"
-                    placeholder="Search by UUID, user, event"
-                    class="q-mb-none"
-                    style="min-width: 280px"
-                    @keyup.enter="handleSearch"
-                >
-                    <template #append>
-                        <q-btn icon="search" flat dense @click="handleSearch" />
-                    </template>
-                </q-input>
+                <div class="row q-gutter-sm items-center">
+                    <!-- Paid Status Filter -->
+                    <q-select
+                        v-model="filter"
+                        :options="[
+        { label: 'All', value: '' },
+        { label: 'Paid', value: '1' },
+        { label: 'Unpaid', value: '0' }
+      ]"
+                        dense
+                        outlined
+                        rounded
+                        color="primary"
+                        emit-value
+                        map-options
+                        style="width: 150px"
+                        @update:model-value="handleSearch"
+                    />
+
+                    <!-- Search Input -->
+                    <q-input
+                        v-model="search"
+                        debounce="500"
+                        outlined
+                        dense
+                        rounded
+                        color="primary"
+                        placeholder="Search by UUID, user, event"
+                        style="min-width: 280px"
+                        @keyup.enter="handleSearch"
+                    >
+                        <template #append>
+                            <q-btn icon="search" flat dense @click="handleSearch" />
+                        </template>
+                    </q-input>
+                </div>
             </q-card-section>
 
             <!-- Table -->
@@ -165,6 +185,8 @@ const statCards = computed(() => ({
 
 
 const search = ref(props.filters.search || '')
+const filter = ref(props.filters.filter ?? '')
+
 const loading = ref(false)
 
 const pagination = computed(() => ({
@@ -177,6 +199,7 @@ const onRequest = (params) => {
     loading.value = true
     router.get(route('admin.payout.index'), {
         search: search.value,
+        filter: filter.value,
         page: params.pagination.page,
         per_page: params.pagination.rowsPerPage
     }, {
@@ -191,6 +214,7 @@ const handleSearch = () => {
     loading.value = true
     router.get(route('admin.payout.index'), {
         search: search.value,
+        filter: filter.value,
         page: 1,
         per_page: pagination.value.rowsPerPage
     }, {

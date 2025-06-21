@@ -30,12 +30,12 @@
         <q-drawer width="250"  class="print-hide bg-transparent"  v-model="state.leftDrawerOpen" side="left">
             <q-list class="bg-transparent full-height">
                 <!--        <q-img class="q-ma-md" width="250px" height="43px" src="/images/logo.png"/>-->
-                <div class="column items-center q-gutter-md q-pa-lg bg-gray-600 text-white">
+                <div class="column items-center q-gutter-md q-pa-lg bg-primary text-white">
 
                     <q-img src="/images/logo.svg" width="46px"/>
                     <div style="line-height: 1" class="text-lg text-grey-3 text-weight-medium text-center">
                         WeBet<br>
-                        <span class="text-sm text-grey-10">(Bet On Any Events)</span>
+                        <span class="text-sm text-grey-6">(Bet On Any Events)</span>
                     </div>
                 </div>
 
