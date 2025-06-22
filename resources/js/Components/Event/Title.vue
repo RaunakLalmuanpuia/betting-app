@@ -4,14 +4,13 @@
             <!-- Header -->
             <header class="flex items-center space-x-4 mb-6">
                 <img
-                    :src="headerImage"
-                    :alt="headerAlt"
+                    :src="`/storage/${event.image}`"
                     class="w-20 h-20 rounded-md object-cover flex-shrink-0"
                     width="80"
                     height="80"
                 />
                 <p class="text-2xl font-extrabold flex-1 leading-tight">
-                    {{ title }}
+                    {{ event.title }}
                 </p>
                 <button
                     aria-label="Share"
@@ -58,12 +57,15 @@
             <!-- Time Range Buttons -->
             <section class="flex justify-center space-x-6 text-green-600 font-semibold text-sm mb-6 select-none">
                 <button v-for="range in timeRanges" :key="range" @click="setRange(range)" :class="{
-          'bg-green-600 text-white rounded-md px-3 py-1': selectedRange === range,
-          'hover:underline': selectedRange !== range
-        }">
+                      'bg-green-600 text-white rounded-md px-3 py-1': selectedRange === range,
+                      'hover:underline': selectedRange !== range
+                    }">
                     {{ range }}
                 </button>
             </section>
+
+
+
 
             <!-- Year and Volume -->
             <section class="flex items-center justify-between border-t border-b border-gray-200 py-3 text-sm">
@@ -93,10 +95,65 @@
             </section>
         </div>
     </div>
+    <div class="bg-white text-gray-900 min-h-screen">
+        <main class="max-w-4xl mx-auto px-6 py-10">
+            <!-- Header -->
+            <header class="flex justify-between items-center mb-6">
+                <p class="text-3xl font-semibold leading-tight">Rules summary</p>
+                <a href="#" class="text-base font-normal hover:underline">Learn more</a>
+            </header>
+
+            <!-- Description -->
+            <section class="text-lg font-normal leading-relaxed mb-6">
+                <p class="mb-4">
+                    {{event.description}}
+                </p>
+            </section>
+
+            <!-- Buttons -->
+            <section class="mb-8">
+                <button
+                    type="button"
+                    class="inline-block bg-gray-200 text-gray-900 font-semibold text-base rounded-lg px-5 py-2.5 mr-4 hover:bg-gray-300 transition"
+                >
+                    View full rules
+                </button>
+                <button
+                    type="button"
+                    class="inline-block bg-gray-200 text-gray-900 font-semibold text-base rounded-lg px-5 py-2.5 hover:bg-gray-300 transition"
+                >
+                    Market Rules
+                </button>
+            </section>
+
+            <hr class="border-t border-gray-200 mb-4" />
+
+            <!-- Expandable Section -->
+            <section>
+                <button
+                    type="button"
+                    class="w-full flex items-center justify-between text-gray-900 text-lg font-normal py-3"
+                    aria-expanded="false"
+                >
+                    <div class="flex items-center space-x-3">
+                        <i class="far fa-calendar-alt text-2xl"></i>
+                        <span>Timeline and payout</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </button>
+                <hr class="border-t border-gray-200" />
+            </section>
+        </main>
+    </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+
+const props = defineProps({
+    event: Object,
+})
+
 
 const title = ref('New US-Iran nuclear deal this year?')
 const headerImage = ref('https://storage.googleapis.com/a1aa/image/f2d2e0c8-ec6e-4fba-5690-1eaa1b39a20b.jpg')
@@ -105,7 +162,7 @@ const chartImage = ref('https://storage.googleapis.com/a1aa/image/68f2dc21-da37-
 
 const chance = ref('44%')
 const change = ref('0.3')
-const source = ref('Kalshi')
+const source = ref('WeBet')
 const volume = ref(143352)
 const selectedYear = ref(2026)
 
@@ -125,3 +182,4 @@ const toggleYearDropdown = () => {
     console.log('Toggle year dropdown')
 }
 </script>
+
