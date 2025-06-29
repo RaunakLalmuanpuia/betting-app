@@ -14,10 +14,6 @@
         </div>
     </q-page>
 
-
-
-
-
     <q-page padding>
         <q-card class="bg-white text-dark shadow-2 rounded-borders q-mx-auto" style="max-width: 1000px;">
             <!-- Event Banner -->

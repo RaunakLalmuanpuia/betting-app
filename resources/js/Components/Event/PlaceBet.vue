@@ -7,7 +7,7 @@
                 <img
                     alt="Image showing US and Iran flags with a nuclear symbol in the center on a wooden background"
                     class="w-16 h-16 rounded-xl object-cover flex-shrink-0"
-                    :src="`/storage/${event.image}`"
+                    :src="`/storage/${selectedOption.image}`"
                 />
                 <div class="flex-1 min-w-0">
                     <p class="text-base text-black leading-tight">

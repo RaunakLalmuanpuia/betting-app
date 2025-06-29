@@ -34,9 +34,7 @@
                     <span class="text-base font-normal">{{ option.label }}</span>
                     <span class="text-xl font-bold">{{ option.odds }}x</span>
                     <div class="flex rounded-md overflow-hidden text-sm font-medium">
-
-                        <span class="px-1 py-1 text-gray-400 select-none">₹{{ option.total_amount }}</span>
-
+                        <q-btn label="BET" @click="openBetDialog(event)" />
                     </div>
                 </div>
             </div>
@@ -53,11 +51,27 @@
 </template>
 
 <script setup>
+import { useQuasar } from 'quasar'
+import PlaceBetDialog from "../Event/PlaceBetDialog.vue";
 
 const props = defineProps({
     events: Object,
 })
 
+const q = useQuasar()
+
+function openBetDialog(event) {
+    q.dialog({
+        component: PlaceBetDialog,
+        // props forwarded to your custom component
+        componentProps: {
+            event: event,
+            persistent: true,
+
+        }
+    })
+
+}
 function getTotalAmount(options) {
     return options.reduce((total, opt) => total + (opt.total_amount || 0), 0);
 }
